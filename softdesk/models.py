@@ -1,4 +1,5 @@
 from django.db import models
+from django.http import request
 from src import settings
 
 

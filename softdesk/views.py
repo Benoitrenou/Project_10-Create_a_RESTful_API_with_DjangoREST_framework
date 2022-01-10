@@ -7,7 +7,8 @@ from .models import Contributor, Issue, Project, Comment
 from .serializers import CommentsSerializer, ContributorSerializer,\
     IssuesSerializer, ProjectSerializer
 from rest_framework.permissions import IsAuthenticated
-from .permissions import HasProjectPermissions
+from .permissions import HasCommentPermission, HasContributorPermissions,\
+    HasIssuePermissions, HasProjectPermissions
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -32,7 +33,7 @@ class ProjectViewSet(ModelViewSet):
 class ContributorsViewSet(ModelViewSet):
 
     serializer_class = ContributorSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasContributorPermissions]
 
     def get_queryset(self):
         return Contributor.objects.filter(project=self.kwargs['project_pk'])
@@ -41,7 +42,7 @@ class ContributorsViewSet(ModelViewSet):
 class IssuesViewSet(ModelViewSet):
 
     serializer_class = IssuesSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasIssuePermissions]
 
     def get_queryset(self):
         return Issue.objects.filter(project=self.kwargs['project_pk'])
@@ -54,31 +55,35 @@ class IssuesViewSet(ModelViewSet):
         return Response(serializer.data)
 
 
-class CommentsViewSet(ModelViewSet):
+""" class CommentsViewSet(ModelViewSet):
 
     serializer_class = CommentsSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, HasCommentPermission]
 
     def get_queryset(self):
-        return Comment.objects.filter(issue=self.kwargs['issue_pk'])
+        return Comment.objects.filter(issue=self.kwargs['issue_pk']) """
 
 
 class CommentsList(APIView):
 
-    def get(self, request, format=None):
+    permission_classes = [IsAuthenticated, HasCommentPermission]
+
+    def get(self, request, project_pk, issue_pk, format=None):
         comments = Comment.objects.filter(issue=self.kwargs['issue_pk'])
         serializer = CommentsSerializer(comments, many=True)
         return Response(serializer.data)
 
-    def post(self, request, format=None):
+    def post(self, request, project_pk, issue_pk, format=None):
         serializer = CommentsSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save()
+            serializer.save(author_user=request.user)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CommentDetail(APIView):
+
+    permission_classes = [IsAuthenticated, HasCommentPermission]
 
     def get_object(self, pk):
         try:
@@ -86,12 +91,12 @@ class CommentDetail(APIView):
         except Comment.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
+    def get(self, request, project_pk, issue_pk, pk, format=None):
         comment = self.get_object(pk)
         serializer = CommentsSerializer(comment)
         return Response(serializer.data)
 
-    def put(self, request, pk, format=None):
+    def put(self, request, project_pk, issue_pk, pk, format=None):
         comment = self.get_object(pk)
         serializer = CommentsSerializer(comment, data=request.data)
         if serializer.is_valid():
@@ -99,7 +104,7 @@ class CommentDetail(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def delete(self, request, pk, format=None):
+    def delete(self, request, project_pk, issue_pk, pk, format=None):
         comment = self.get_object(pk)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

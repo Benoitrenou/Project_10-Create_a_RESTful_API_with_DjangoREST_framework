@@ -6,7 +6,7 @@ class ProjectSerializer(ModelSerializer):
 
     class Meta:
         model = Project
-        fields = '__all__'
+        exclude = ['author_user']
         read_field_only = ['id', 'author']
 
 
@@ -21,12 +21,12 @@ class ContributorSerializer(ModelSerializer):
 class IssuesSerializer(ModelSerializer):
     class Meta:
         model = Issue
-        fields = '__all__'
-        read_field_only = ['id', 'project', 'author', 'created_time']
+        exclude = ['author_user']
+        read_field_only = ['id', 'project', 'author_user', 'created_time']
 
 
 class CommentsSerializer(ModelSerializer):
     class Meta:
         model = Comment
-        fields = '__all__'
-        read_field_only = ['id', 'author', 'issue', 'created_time']
+        exclude = ['author_user']
+        read_field_only = ['id', 'author_user', 'issue', 'created_time']
