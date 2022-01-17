@@ -47,7 +47,7 @@ class HasIssuePermissions(BasePermission):
             return True
         if request.method in SAFE_METHODS:
             return True
-        return request.user in [obj.author_user, obj.assignee_user]
+        return request.user==obj.author_user
 
 
 class HasCommentPermission(BasePermission):
