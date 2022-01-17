@@ -6,27 +6,38 @@ class ProjectSerializer(ModelSerializer):
 
     class Meta:
         model = Project
-        exclude = ['author_user']
-        read_field_only = ['id', 'author']
+        fields = ['title', 'description', 'type', 'author_user']
+        read_only_fields = ['author_user']
 
 
 class ContributorSerializer(ModelSerializer):
     
     class Meta:
         model = Contributor
-        fields = '__all__'
-        read_field_only = ['id', 'project']
+        fields = ['id', 'user', 'permission', 'role', 'project']
+        read_only_fields = ['project']
 
 
 class IssuesSerializer(ModelSerializer):
+
     class Meta:
         model = Issue
-        exclude = ['author_user']
-        read_field_only = ['id', 'project', 'author_user', 'created_time']
+        fields = [
+            'title',
+            'description',
+            'tag',
+            'priority',
+            'status',
+            'author_user',
+            'assignee_user',
+            'project'
+            ]
+        read_only_fields = ['author_user', 'project']
 
 
 class CommentsSerializer(ModelSerializer):
+
     class Meta:
         model = Comment
-        exclude = ['author_user']
-        read_field_only = ['id', 'author_user', 'issue', 'created_time']
+        fields = ['id', 'description', 'author_user', 'issue']
+        read_only_fields = ['author_user', 'issue']

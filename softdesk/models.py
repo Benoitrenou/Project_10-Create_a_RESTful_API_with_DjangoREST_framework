@@ -37,7 +37,7 @@ class Contributor(models.Model):
         on_delete=models.CASCADE,
         related_name='contributor'
         )
-    permission = models.CharField(max_length=255)
+    permission = models.CharField(max_length=255, blank=True)
     role = models.CharField(
         default='Contributor',
         choices=ROLE_OPTIONS,

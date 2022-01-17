@@ -1,5 +1,3 @@
-from django.shortcuts import render
-from rest_framework.serializers import Serializer
 from django.http import Http404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
@@ -24,10 +22,10 @@ class ProjectViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = ProjectSerializer(data=request.data)
-        serializer.is_valid()
-        project = serializer.save(author_user=request.user)
-        Contributor.objects.create(user=request.user, project=project, role='AUTHOR')
-        return Response(serializer.data)
+        if serializer.is_valid(raise_exception=True):
+            project = serializer.save(author_user=request.user)
+            Contributor.objects.create(user=request.user, project=project, role='Author')
+            return Response(serializer.data)
 
 
 class ContributorsViewSet(ModelViewSet):
@@ -37,6 +35,13 @@ class ContributorsViewSet(ModelViewSet):
 
     def get_queryset(self):
         return Contributor.objects.filter(project=self.kwargs['project_pk'])
+
+    def create(self, request, *args, **kwargs):
+        serializer = ContributorSerializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            project = Project.objects.get(id=self.kwargs['project_pk'])
+            serializer.save(project=project)
+            return Response(serializer.data)
 
 
 class IssuesViewSet(ModelViewSet):
@@ -49,19 +54,10 @@ class IssuesViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         serializer = IssuesSerializer(data=request.data)
-        serializer.is_valid()
-        project = Project.objects.get(id=self.kwargs['project_pk'])
-        serializer.save(author_user=request.user, project=project)
-        return Response(serializer.data)
-
-
-""" class CommentsViewSet(ModelViewSet):
-
-    serializer_class = CommentsSerializer
-    permission_classes = [IsAuthenticated, HasCommentPermission]
-
-    def get_queryset(self):
-        return Comment.objects.filter(issue=self.kwargs['issue_pk']) """
+        if serializer.is_valid(raise_exception=True):
+            project = Project.objects.get(id=self.kwargs['project_pk'])
+            serializer.save(author_user=request.user, project=project)
+            return Response(serializer.data)
 
 
 class CommentsList(APIView):
@@ -75,8 +71,9 @@ class CommentsList(APIView):
 
     def post(self, request, project_pk, issue_pk, format=None):
         serializer = CommentsSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save(author_user=request.user)
+        if serializer.is_valid(raise_exception=True):
+            issue = Issue.objects.get(id=self.kwargs['issue_pk'])
+            serializer.save(author_user=request.user, issue=issue)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -87,9 +84,11 @@ class CommentDetail(APIView):
 
     def get_object(self, pk):
         try:
-            return Comment.objects.get(id=pk)
+            comment = Comment.objects.get(id=pk)
         except Comment.DoesNotExist:
             raise Http404
+        self.check_object_permissions(self.request, comment)
+        return comment
 
     def get(self, request, project_pk, issue_pk, pk, format=None):
         comment = self.get_object(pk)
@@ -99,7 +98,7 @@ class CommentDetail(APIView):
     def put(self, request, project_pk, issue_pk, pk, format=None):
         comment = self.get_object(pk)
         serializer = CommentsSerializer(comment, data=request.data)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
