@@ -57,7 +57,7 @@ Enfin pour lancer LitReview, dans le terminal depuis le répertoire du projet :
     
 ## Accès à la documentation
 
-Vous pouvez retrouver toute la documentation de l'API à l'adresse suivante [I'm an inline-style link](https://documenter.getpostman.com/view/17414272/UVXnFtu4)
+Vous pouvez retrouver toute la documentation de l'API [à cette adresse](https://documenter.getpostman.com/view/17414272/UVXnFtu4)
 
 ## Générer un rapport Flake8
 
