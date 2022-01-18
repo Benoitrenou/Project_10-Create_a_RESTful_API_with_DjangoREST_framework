@@ -3,15 +3,21 @@ from .models import Project, Issue, Comment, Contributor
 
 
 class ProjectSerializer(ModelSerializer):
+    """
+    Handles Project serialization
+    """
 
     class Meta:
         model = Project
-        fields = ['title', 'description', 'type', 'author_user']
+        fields = ['id', 'title', 'description', 'type', 'author_user']
         read_only_fields = ['author_user']
 
 
 class ContributorSerializer(ModelSerializer):
-    
+    """
+    Handles Contributor serialization
+    """
+
     class Meta:
         model = Contributor
         fields = ['id', 'user', 'permission', 'role', 'project']
@@ -19,10 +25,14 @@ class ContributorSerializer(ModelSerializer):
 
 
 class IssuesSerializer(ModelSerializer):
+    """
+    Handles Issue serialization
+    """
 
     class Meta:
         model = Issue
         fields = [
+            'id',
             'title',
             'description',
             'tag',
@@ -36,6 +46,9 @@ class IssuesSerializer(ModelSerializer):
 
 
 class CommentsSerializer(ModelSerializer):
+    """
+    Handles Comment serialization
+    """
 
     class Meta:
         model = Comment

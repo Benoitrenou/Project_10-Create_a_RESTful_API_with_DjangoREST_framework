@@ -5,6 +5,9 @@ from django.contrib.auth.password_validation import validate_password
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    """
+    Serializer to obtain token via JWT
+    """
 
     @classmethod
     def get_token(cls, user):
@@ -15,7 +18,10 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    
+    """
+    User serializer handling password check
+    """
+
     password = serializers.CharField(
         write_only=True,
         required=True,
@@ -26,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = (
+            'id',
             'username',
             'password',
             'password2',
@@ -38,6 +45,9 @@ class UserSerializer(serializers.ModelSerializer):
         }
 
     def validate(self, attrs):
+        """
+        Integrate verification match of password fields in data validation
+        """
         if attrs['password'] != attrs['password2']:
             raise serializers.ValidationError(
                 {"password": "Password fields didn't match."}
@@ -46,12 +56,15 @@ class UserSerializer(serializers.ModelSerializer):
         return attrs
 
     def create(self, validated_data):
+        """
+        Setup User instanciation
+        """
         user = User.objects.create(
             username=validated_data['username'],
             email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name']
-        )    
+        )
         user.set_password(validated_data['password'])
         user.save()
         return user

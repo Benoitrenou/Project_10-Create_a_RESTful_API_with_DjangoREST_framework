@@ -21,8 +21,6 @@ projects_router.register(
     views.ContributorsViewSet,
     basename='projects-contributors'
     )
-#issues_router = routers.NestedSimpleRouter(projects_router, 'issues', lookup='issue')
-#issues_router.register('comments', views.CommentsViewSet, basename='issues-comments')
 
 urlpatterns = [
     path('', include(router.urls)),
@@ -37,5 +35,4 @@ urlpatterns = [
         views.CommentDetail.as_view(),
         name='comment-details'
         )
-    #path('', include(issues_router.urls)),
 ]

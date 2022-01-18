@@ -1,9 +1,11 @@
 from django.db import models
-from django.http import request
 from src import settings
 
 
 class Project(models.Model):
+    """
+    Project are base of organisation of Models
+    """
 
     TYPE_OPTIONS = [
         ('Back-end', 'Back-end'),
@@ -14,7 +16,7 @@ class Project(models.Model):
 
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=1064)
-    type = models.CharField(choices=TYPE_OPTIONS, max_length=15 )
+    type = models.CharField(choices=TYPE_OPTIONS, max_length=15)
     author_user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         related_name='projects',
@@ -23,6 +25,9 @@ class Project(models.Model):
 
 
 class Contributor(models.Model):
+    """
+    Contributors are Users allowed to participate to Projects
+    """
     ROLE_OPTIONS = [
         ('Author', 'Author'),
         ('Contributor', 'Contributor')
@@ -46,6 +51,9 @@ class Contributor(models.Model):
 
 
 class Issue(models.Model):
+    """
+    Issues are problems encountered in Projects development
+    """
     TAG_OPTIONS = [
         ('Bug', 'Bug'),
         ('Amélioration', 'Amélioration'),
@@ -61,7 +69,6 @@ class Issue(models.Model):
         ('En cours', 'En cours'),
         ('Terminé', 'Terminé')
     ]
-
 
     title = models.CharField(max_length=128)
     description = models.CharField(max_length=1024)
@@ -83,6 +90,9 @@ class Issue(models.Model):
 
 
 class Comment(models.Model):
+    """
+    Comments are remarkes made by Users about Issues
+    """
 
     description = models.CharField(max_length=255)
     author_user = models.ForeignKey(

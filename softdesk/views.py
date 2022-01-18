@@ -1,4 +1,4 @@
-from django.http import Http404
+from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
 from .models import Contributor, Issue, Project, Comment
@@ -12,31 +12,54 @@ from rest_framework import status
 
 
 class ProjectViewSet(ModelViewSet):
+    """
+    Viewset handling Project's views
+    """
 
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated, HasProjectPermissions]
 
     def get_queryset(self):
+        """
+        Override to filter Projects where the User is Contributor
+        """
         return Project.objects.filter(contributor__user=self.request.user)
 
     def create(self, request, *args, **kwargs):
+        """
+        Override to include Contributor instanciation for user
+        """
         serializer = ProjectSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             project = serializer.save(author_user=request.user)
-            Contributor.objects.create(user=request.user, project=project, role='Author')
+            Contributor.objects.create(
+                user=request.user,
+                project=project,
+                role='Author'
+                )
             return Response(serializer.data)
 
 
 class ContributorsViewSet(ModelViewSet):
+    """
+    Viewset handling Contributor's views
+    """
 
     serializer_class = ContributorSerializer
     permission_classes = [IsAuthenticated, HasContributorPermissions]
 
     def get_queryset(self):
+        """
+        Override to filter Project's Contributors
+        where the User is Contributor
+        """
         return Contributor.objects.filter(project=self.kwargs['project_pk'])
 
     def create(self, request, *args, **kwargs):
+        """
+        Override to include Project in Contributor instanciation
+        """
         serializer = ContributorSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             project = Project.objects.get(id=self.kwargs['project_pk'])
@@ -45,14 +68,24 @@ class ContributorsViewSet(ModelViewSet):
 
 
 class IssuesViewSet(ModelViewSet):
+    """
+    Viewset handling Issue's views
+    """
 
     serializer_class = IssuesSerializer
     permission_classes = [IsAuthenticated, HasIssuePermissions]
 
     def get_queryset(self):
+        """
+        Override to filter Project's Issues
+        where the User is Contributor
+        """
         return Issue.objects.filter(project=self.kwargs['project_pk'])
 
     def create(self, request, *args, **kwargs):
+        """
+        Override to include Project in Issue instanciation
+        """
         serializer = IssuesSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             project = Project.objects.get(id=self.kwargs['project_pk'])
@@ -61,15 +94,24 @@ class IssuesViewSet(ModelViewSet):
 
 
 class CommentsList(APIView):
+    """
+    View handling list views for Comments
+    """
 
     permission_classes = [IsAuthenticated, HasCommentPermission]
 
     def get(self, request, project_pk, issue_pk, format=None):
+        """
+        Handles GET HTTP method for Comments
+        """
         comments = Comment.objects.filter(issue=self.kwargs['issue_pk'])
         serializer = CommentsSerializer(comments, many=True)
         return Response(serializer.data)
 
     def post(self, request, project_pk, issue_pk, format=None):
+        """
+        Handles POST HTTP method for Comments
+        """
         serializer = CommentsSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             issue = Issue.objects.get(id=self.kwargs['issue_pk'])
@@ -79,23 +121,32 @@ class CommentsList(APIView):
 
 
 class CommentDetail(APIView):
+    """
+    View handling detail views for a Comment
+    """
 
     permission_classes = [IsAuthenticated, HasCommentPermission]
 
     def get_object(self, pk):
-        try:
-            comment = Comment.objects.get(id=pk)
-        except Comment.DoesNotExist:
-            raise Http404
+        """
+        Get Commment and verifies user's permissions
+        """
+        comment = get_object_or_404(Comment, id=pk)
         self.check_object_permissions(self.request, comment)
         return comment
 
     def get(self, request, project_pk, issue_pk, pk, format=None):
+        """
+        Handles GET HTTP method for the Comment
+        """
         comment = self.get_object(pk)
         serializer = CommentsSerializer(comment)
         return Response(serializer.data)
 
     def put(self, request, project_pk, issue_pk, pk, format=None):
+        """
+        Handles PUT HTTP method for the Comment
+        """
         comment = self.get_object(pk)
         serializer = CommentsSerializer(comment, data=request.data)
         if serializer.is_valid(raise_exception=True):
@@ -104,6 +155,9 @@ class CommentDetail(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, project_pk, issue_pk, pk, format=None):
+        """
+        Handles DELETE HTTP method for the Comment
+        """
         comment = self.get_object(pk)
         comment.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
