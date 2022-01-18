@@ -51,7 +51,7 @@ Afin que les packages nécessaires au fonctionnement de l'application soient ins
 
 ## Lancement de l'application
 
-Enfin pour lancer LitReview, dans le terminal depuis le répertoire du projet :
+Enfin pour lancer l'API, dans le terminal depuis le répertoire du projet :
 
     $ python manage.py runserver
     
