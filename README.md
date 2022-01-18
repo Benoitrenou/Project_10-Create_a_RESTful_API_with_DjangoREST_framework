@@ -29,19 +29,19 @@ Pour créer un environnement virtuel, depuis votre terminal de commande, effectu
 ### Sous Windows:
     
     $ virtualenv <environment_name>
-    exemple : virtualenv envlitreview 
+    exemple : virtualenv venvAPI 
     
 ## Activation de l'environnement virtuel 
 
 ### Sous Linux / MAC OS:
 
     $ source <environment_name>/bin/activate
-    exemple : source envlitreview/bin/activate
+    exemple : source venvAPI/bin/activate
    
 ### Sous Windows:
 
     $ source <environment_name>/Scripts/activate
-    exemple : source envlitreview/Scripts/activate
+    exemple : source venvAPI/Scripts/activate
     
 ## Installation des packages : 
 
