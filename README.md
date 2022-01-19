@@ -63,4 +63,4 @@ Vous pouvez retrouver toute la documentation de l'API [à cette adresse](https:/
 
 Pour générer un rapport Flake8 dans le terminal, placez vous dans le dossier de travail parent du projet, et utilisez la commande :
 
-    $ flake8 ..projet_10 --exclude venv,__pychache__,settings.py
+    $ flake8 projet_10 --exclude venv,__pychache__,settings.py
