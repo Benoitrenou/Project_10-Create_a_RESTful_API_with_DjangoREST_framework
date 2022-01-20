@@ -15,7 +15,6 @@ class ProjectViewSet(ModelViewSet):
     """
     Viewset handling Project's views
     """
-
     queryset = Project.objects.all()
     serializer_class = ProjectSerializer
     permission_classes = [IsAuthenticated, HasProjectPermissions]
@@ -104,7 +103,10 @@ class CommentsList(APIView):
         """
         Handles GET HTTP method for Comments
         """
-        comments = Comment.objects.filter(issue=self.kwargs['issue_pk'])
+        comments = Comment.objects.filter(
+            issue=self.kwargs['issue_pk'],
+            issue__project__pk=self.kwargs['project_pk']
+            )
         serializer = CommentsSerializer(comments, many=True)
         return Response(serializer.data)
 
@@ -131,7 +133,12 @@ class CommentDetail(APIView):
         """
         Get Commment and verifies user's permissions
         """
-        comment = get_object_or_404(Comment, id=pk)
+        comment = get_object_or_404(
+            Comment,
+            id=pk,
+            issue__pk=self.kwargs['issue_pk'],
+            issue__project__pk=self.kwargs['project_pk']
+            )
         self.check_object_permissions(self.request, comment)
         return comment
 
