@@ -1,6 +1,8 @@
 from django.shortcuts import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.views import APIView
+
+from authentication.models import User
 from .models import Contributor, Issue, Project, Comment
 from .serializers import CommentsSerializer, ContributorSerializer,\
     IssuesSerializer, ProjectSerializer
@@ -88,7 +90,13 @@ class IssuesViewSet(ModelViewSet):
         serializer = IssuesSerializer(data=request.data)
         if serializer.is_valid(raise_exception=True):
             project = Project.objects.get(id=self.kwargs['project_pk'])
+            assignee_user = User.objects.get(id=request.data['assignee_user'])
             serializer.save(author_user=request.user, project=project)
+            Contributor.objects.create(
+                user=assignee_user,
+                project=project,
+                role='Contributor'
+                )
             return Response(serializer.data)
 
 
