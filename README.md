@@ -1,66 +1,55 @@
-# projet_10
+In this scenario, this project is an API developed for SoftDesk, a software company, to facilitate the monitoring of projects and problems encountered in their development.
 
-Ce projet est une API développée pour SoftDesk afin de faciliter le suivi des projets et problèmes rencontrés dans leurs développements
-L'utilisateur peut ainsi envoyer des requêtes à cette API afin d'obtenir des informations sur :
-  - les projets auxquels il est contributeur, 
-  - les autres contributeurs du projet,
-  - les problèmes liés à ces projets,
-  - les commentaires laissés sur ces problèmes.
+The user can send requests to this API in order to get information about :
+  - the projects to which he is a contributor, 
+  - the other contributors of the project,
+  - the problems related to these projects,
+  - comments left on these problems.
 
-Cette application a été construite via Django Rest Framework dans sa version 3.13.1.
+This application was built using Django Rest Framework in its version 3.13.1
 
-Afin de faire fonctionner cette application en local, veuillez suivres les indications suivantes
+Objectives of the project:
+    - Explore the functioning of an API 
+    - Create an API using Django REST framework
+    - Create the documentation of an API
+    - Secure an application via authentication, permissions, token, etc.
 
-## Clônage du projet
+To launch the application, follow the instructions below
 
-Tout d'abord, clônez en local le dépôt distant via la commande suivante dans votre terminal :
+## Create virtual environment
 
-    $ git clone https://github.com/Benoitrenou/projet_10.git
+From your terminal, enter the following commands depending on your operating system
 
-## Création de l'environnement virtuel
-
-Pour créer un environnement virtuel, depuis votre terminal de commande, effectuez les commandes suivantes :
-
-### Sous Linux/ MAC OS
+### From Linux/ MAC OS
 
     $ python -m venv <environment_name>
-    exemple : python -m venv venvAPI
+    example : python -m venv venvAPI
     
-### Sous Windows:
+### From Windows:
     
     $ virtualenv <environment_name>
-    exemple : virtualenv venvAPI 
+    example : virtualenv venvAPI 
     
-## Activation de l'environnement virtuel 
+## Activate virtual environment
 
-### Sous Linux / MAC OS:
+### From Linux / MAC OS:
 
     $ source <environment_name>/bin/activate
-    exemple : source venvAPI/bin/activate
+    example : source venvAPI/bin/activate
    
-### Sous Windows:
+### From Windows:
 
     $ source <environment_name>/Scripts/activate
-    exemple : source venvAPI/Scripts/activate
+    example : source venvAPI/Scripts/activate
     
-## Installation des packages : 
-
-Afin que les packages nécessaires au fonctionnement de l'application soient installés sur l'environnement virtuel, entrez la commande suivante :
+## Installation of packages : 
 
     $ pip install -r requirements.txt
 
-## Lancement de l'application
-
-Enfin pour lancer l'API, dans le terminal depuis le répertoire du projet :
+## Launch application
 
     $ python manage.py runserver
-    
-## Accès à la documentation
 
-Vous pouvez retrouver toute la documentation de l'API [à cette adresse](https://documenter.getpostman.com/view/17414272/UVXnFtu4)
+## Acces to documentation
 
-## Générer un rapport Flake8
-
-Pour générer un rapport Flake8 dans le terminal, placez vous dans le dossier de travail parent du projet, et utilisez la commande :
-
-    $ flake8 projet_10 --exclude venv,__pychache__,settings.py
+You can access to the API documentation [at this address](https://documenter.getpostman.com/view/17414272/UVXnFtu4)
