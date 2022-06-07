@@ -9,10 +9,10 @@ The user can send requests to this API in order to get information about :
 This application was built using Django Rest Framework in its version 3.13.1
 
 Objectives of the project:
-    - Explore the functioning of an API 
-    - Create an API using Django REST framework
-    - Create the documentation of an API
-    - Secure an application via authentication, permissions, token, etc.
+  - Explore the functioning of an API 
+  - Create an API using Django REST framework
+  - Create the documentation of an API
+  - Secure an application via authentication, permissions, token, etc.
 
 To launch the application, follow the instructions below
 
